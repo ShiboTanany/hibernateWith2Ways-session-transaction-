@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+          http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd
+          http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
+          http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+">
+    <context:property-placeholder location="src/main/resources/connection.properties"/>
+    <bean  id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="${con.drivermanager}"/>
+        <property name="url" value="${con.url}"/>
+        <property name="password" value="${con.password}"/>
+        <property name="username" value="${con.username}"/>
+        
+        
+    </bean>
+    <tx:annotation-driven />
+    
+    <bean id="hibernate3SessionFactory"
+          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <property name="mappingResources">
+            <list>
+                <value>com/mycompany/hibernatetemplate3/entities/ContactsInfo.hbm.xml</value>
+                <value>com/mycompany/hibernatetemplate3/entities/User.hbm.xml</value>
+            </list>
+        </property>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+                <prop key="hibernate.show_sql">true</prop>
+         
+            </props>
+        </property>
+    </bean>
+    <bean id="hibernateTemplate" class="org.springframework.orm.hibernate4.HibernateTemplate">
+        <property name="sessionFactory" ref="hibernate3SessionFactory"/>
+    </bean>
+    
+    <bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="sessionFactory" ref="hibernate3SessionFactory" />
+    </bean> 
+    
+  
+    <bean id="transactiontemplate" class="org.springframework.transaction.support.TransactionTemplate">
+        <property name="transactionManager" ref="transactionManager" />
+    </bean>
+
+    <bean id="crud" class="com.mycompany.hibernatetemplate3.DaoCrud">
+        <property name="transactionTemplate" ref="transactiontemplate" />
+        <property name="hibernateTemplate" ref="hibernateTemplate" />
+         
+    </bean>
+    <context:annotation-config/>
+
+</beans>

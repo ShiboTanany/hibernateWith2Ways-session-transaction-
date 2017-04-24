@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Apr 23, 2017 9:08:16 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="com.mycompany.hibernatetemplate3.entities.User" table="User" catalog="contactList" optimistic-lock="version">
+        <id name="userId" type="java.lang.Integer">
+            <column name="userId" />
+            <generator class="identity" />
+        </id>
+        <property name="username" type="string">
+            <column name="username" length="45" not-null="true" />
+        </property>
+        <property name="userpass" type="string">
+            <column name="userpass" length="45" not-null="true" />
+        </property>
+        <property name="userEmail" type="string">
+            <column name="userEmail" length="45" not-null="true" />
+        </property>
+        <property name="userPhone" type="string">
+            <column name="userPhone" length="45" not-null="true" />
+        </property>
+        <set name="contactsInfos" table="contactList" inverse="false" lazy="true" fetch="select">
+            <key>
+                <column name="userId" not-null="true" />
+            </key>
+            <many-to-many entity-name="com.mycompany.hibernatetemplate3.entities.ContactsInfo">
+                <column name="contactUserId" not-null="true" />
+            </many-to-many>
+        </set>
+    </class>
+</hibernate-mapping>
